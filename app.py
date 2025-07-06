@@ -9,10 +9,19 @@ from langchain.chat_models import ChatOpenAI
 from langchain.chains import RetrievalQA
 from langchain.prompts import PromptTemplate
 from langchain_groq import ChatGroq
+from langchain_mistral import ChatMistral
+import os
+import os
+from dotenv import load_dotenv
+load_dotenv() 
 
+os.environ["HF_TOKEN"] =os.getenv("HF_TOKEN")
+os.environ["GROQ_API_KEY"] = os.getenv("GROQ_API_KEY")
+os.environ["Mistral_API_KEY"] = os.getenv("MISTRAL_API_KEY")
+
+#os.environ["langchain_api_key"] = os.getenv("LANGCHAIN_API_KEY")
 
 from docx import Document
-import os
 import tempfile
 
 # Step 1: UI - Upload PDF
@@ -45,6 +54,7 @@ if uploaded_file:
     # Step 5: QA Chain
     retriever = vectorstore.as_retriever(search_type="mmr", search_kwargs={"k": 5})
     llm = ChatGroq(model="qwen-qwq-32b")
+   # llm= ChatMistral(model="mistral-large-v0.1", temperature=0.2, max_tokens=512)
     qa_chain = RetrievalQA.from_chain_type(llm=llm, retriever=retriever, chain_type_kwargs={"prompt": prompt})
 
     # Step 6: Ask a question
